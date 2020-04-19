@@ -43,6 +43,7 @@
 
 ;; optionally declare default header arguments for this language
 (defvar org-babel-default-header-args:typescript '((:cmdline . "--noImplicitAny")))
+(defvar org-babel-default-header-args:typescript '((:tsconfig . "tsconfig.json")))
 
 (defun org-babel-variable-assignments:typescript (params)
   "Return list of typescript statements assigning the block's variables."
@@ -61,9 +62,9 @@ specifying a var of the same value."
   "Execute a block of Typescript code with org-babel.  This function is
 called by `org-babel-execute-src-block'"
   (let* ((tmp-src-file (org-babel-temp-file "ts-src-" ".ts"))
-         (tmp-out-file (replace-regexp-in-string ".ts" ".js" tmp-src-file))
+         (tmp-out-file (replace-regexp-in-string ".ts$" ".js" tmp-src-file))
          (cmdline (cdr (assoc :cmdline params)))
-         (tsconfig (or (cdr (assoc :tsconfig params)) "tsconfig.json"))
+         (tsconfig (cdr (assoc :tsconfig params)))
          (cmdline (if cmdline (concat " " cmdline) ""))
          (jsexec (if (assoc :wrap params) ""
                    (concat " ; node " (org-babel-process-file-name tmp-out-file))
